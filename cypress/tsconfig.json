@@ -8,8 +8,10 @@
       "noEmit": true,
       "composite": true,
       "jsx": "react-jsx",
-      "strict": true
+      "strict": true,
+      "allowImportingTsExtensions": true,
+      "rootDir": "../"
     },
-    "include": ["**/*.tsx", "**/*.ts", "**/*.js", "**/*.jsx"]
+    "include": ["**/*.tsx", "**/*.ts", "**/*.js", "**/*.jsx","**/*.json",  "../**/*.ts", "../**/*.tsx", "../**/*.js"]
   }
   

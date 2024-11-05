@@ -56,13 +56,15 @@ const Quiz = () => {
 
   if (quizCompleted) {
     return (
-      <div className="card p-4 text-center">
-        <h2>Quiz Completed</h2>
-        <div className="alert alert-success">
+      <div className="p-4 text-center">
+        <h2 className="h1" data-cy="quiz-completed">Quiz Completed!</h2>
+
+        <div data-cy="score" className="h3">
           Your score: {score}/{questions.length}
         </div>
-        <button className="btn btn-primary d-inline-block mx-auto" onClick={handleStartQuiz}>
-          Take New Quiz
+        <button data-cy="start-quiz" className="btn btn-primary mt-3" onClick={handleStartQuiz}>
+          Start Quiz
+        
         </button>
       </div>
     );
@@ -96,3 +98,9 @@ const Quiz = () => {
 };
 
 export default Quiz;
+
+//
+        ///write test logic for the button
+
+
+       
