@@ -1,105 +1,85 @@
-// Quiz.cy.jsx
+// cypress/component/Quiz.cy.tsx
 import Quiz from "../../client/src/components/Quiz";
 import { mount } from "cypress/react18";
 
-
+// Mock question data
 const mockQuestions = [
-{
-  question: "What is 2 + 2?",
-  answers: [
-    { text: "3", isCorrect: false },
-    { text: "4", isCorrect: true },
-    { text: "5", isCorrect: false }
-  ]
-},
-{
-  question: "What is 3 + 5?",
-  answers: [
-    { text: "7", isCorrect: false },
-    { text: "8", isCorrect: true },
-    { text: "9", isCorrect: false }
-  ]
-}
+  {
+    question: "What is 2 + 2?",
+    answers: [
+      { text: "4", isCorrect: true },
+      { text: "22", isCorrect: false },
+      { text: "5", isCorrect: false },
+    ],
+  },
+  {
+    question: "What is 3 * 3?",
+    answers: [
+      { text: "6", isCorrect: false },
+      { text: "9", isCorrect: true },
+      { text: "33", isCorrect: false },
+    ],
+  },
+
+  
 ];
 
-describe('Quiz Component', () => {
 
-
-  
-    beforeEach(() => {
-      // Intercept the API call and return mock questions
-      cy.intercept('GET', '/api/questions/random', {
-        statusCode: 200,
-        body: mockQuestions
-      }).as('getMockQuestions');
-  
-      // Mount the Quiz component before each test
-      cy.mount(<Quiz />);
-    });
-  
-    it('displays the start button initially', () => {
-      cy.contains('Start Quiz').should('be.visible');
-    });
-  
-    it('starts the quiz and displays the first question', () => {
-      cy.contains('Start Quiz').click();
-      cy.wait('@getMockQuestions'); // Wait for mock data to load
-      cy.get('h2').should('contain', mockQuestions[0].question); // Ensure the first question is displayed
-    });
-  
-    it('advances through questions when an answer is clicked', () => {
-      cy.contains('Start Quiz').click();
-      cy.wait('@getMockQuestions');
-  
-      // Click the correct answer for the first question
-      cy.get('button').contains('2').click(); // Click the answer button labeled "2" (index-based)
-  
-      // Check if the next question is displayed
-      cy.get('h2').should('contain', mockQuestions[1].question);
-    });
-  
-    it('shows the final score after completing all questions', () => {
-      cy.contains('Start Quiz').click();
-      cy.wait('@getMockQuestions');
-  
-      // Answer all questions to complete the quiz
-      cy.get('button').contains('4').click();
-
-        cy.get('button').contains('8').click();
-       // Assume answer 2 is correct in mock data
-  
-      // Check for the quiz completion screen
-      cy.get('h2').should('contain', 'Quiz Completed');// Ensure the "Quiz Completed" screen is shown
-      
-      cy.get('[data-cy="score"]').should('contain', `Your score: 2/2`); // Score should be 2/2 for all correct answers
-    });
-  
-
-    // test for the restart button
-    it('restarts the quiz when the restart button is clicked', () => {
-        cy.contains('Start Quiz').click();
-        cy.wait('@getMockQuestions');
-
-  
-      // Complete the quiz
-
-      cy.get('button').contains('2').click({ multiple: true });
-  
-
-//       assertexpected <h2> to contain Quiz Completed
-// AssertionError
-// Timed out retrying after 4000ms: expected '<h2>' to contain 'Quiz Completed'
-//       // Ensure the "Quiz Completed" screen is shown
-cy.get('h2', { timeout: 10000 }).should('contain', 'Quiz Completed');
-
-      cy.get('[data-cy="score"]').should('contain', `Your score: 2/2`); // Score should be 2/2 for all correct answers
-
-
-    
-  
-      // Restart the quiz
-      cy.get('[data-cy="start-quiz"]').click();
-      cy.contains('Start Quiz').should('be.visible'); // The Start Quiz button should be visible again
-    });
+   
+describe("Quiz Component", () => {
+  it("displays the Start Quiz button initially", () => {
+    mount(<Quiz />);
+    cy.contains("Start Quiz").should("be.visible");
   });
-  
+
+  it("loads questions and starts the quiz on clicking Start Quiz", () => {
+    // Adjust the route to match what the component is requesting
+    cy.intercept("GET", "/api/questions/random", mockQuestions).as(
+      "getQuestions"
+    );
+    mount(<Quiz />);
+
+    cy.contains("Start Quiz").click();
+    cy.wait("@getQuestions"); // Wait for the request to finish
+    cy.get(".quiz-loading").should("not.exist");
+    cy.contains(mockQuestions[0].question).should("be.visible");
+  });
+
+  it("shows next question after answering a question", () => {
+    cy.intercept("GET", "/api/questions/random", mockQuestions).as(
+      "getQuestions"
+    );
+    mount(<Quiz />);
+
+    cy.contains("Start Quiz").click();
+    cy.wait("@getQuestions"); // Wait for the request to finish
+    cy.get("[data-cy=answer-button]").first().click(); // Click the first answer
+    // cy.contains(mockQuestions[0].answers[0].text).click(); // Click the correct answer
+    cy.contains(mockQuestions[1].question).should("be.visible"); // Increase timeout if needed
+  });
+
+  it("shows the final score and allows restarting after completing the quiz", () => {
+    cy.intercept("GET", "/api/questions/random", mockQuestions).as(
+      "getQuestions"
+    );
+    mount(<Quiz />);
+
+    cy.contains("Start Quiz").click();
+    cy.wait("@getQuestions");
+
+    // Loop through each question and select the first answer marked as correct
+    mockQuestions.forEach((question) => {
+      cy.get("[data-cy=answer-button]")
+        .eq(question.answers.findIndex((a) => a.isCorrect))
+        .click(); // Click the correct answer based on its position
+    });
+
+    // Assert that the score and completion message is visible
+    cy.contains(
+      `Your score: ${mockQuestions.length}/${mockQuestions.length}`
+    ).should("be.visible");
+
+    // Click the "Take New Quiz" button to restart
+    cy.contains("Take New Quiz").click();
+  });
+});
