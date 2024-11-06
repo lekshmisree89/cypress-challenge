@@ -12,9 +12,17 @@ This project contains end-to-end tests for the application using Cypress. Cypres
 
 **Project Structure**
 
+**Cypress configuration**
+
 **Writing Tests**
 
 **Running Tests**
+
+**Git repo link**
+
+**Video submission link**
+
+
 
 
 
@@ -60,11 +68,40 @@ cypress/fixtures/: Holds static data or mock data used in tests.
 cypress/support/: Contains custom commands and setup files.
 
 
-### Writing Tests
-Basic Example
-Here’s an example of a simple Cypress test to check that the homepage loads correctly:
 
-javascript
+
+
+### Cypress Configuration
+
+ 1. Ensure your Cypress configuration (typically in cypress.config.js) includes separate setups for component and e2e tests. This is usually specified like this:
+
+
+```
+const { defineConfig } = require("cypress");
+
+module.exports = defineConfig({
+  e2e: {
+    // Configuration specific to e2e tests
+    setupNodeEvents(on, config) {
+      // e2e plugins or setup
+    },
+  },
+  component: {
+    // Configuration specific to component tests
+    setupNodeEvents(on, config) {
+      // component testing plugins or setup
+    },
+  },
+});
+
+```
+
+
+### Writing tests
+
+Basic Example
+
+Here’s an example of a simple Cypress test to check that the homepage loads correctly:
 
 ```
 describe('Homepage', () => {
@@ -109,4 +146,39 @@ npx cypress open
 
 -- This opens the Cypress dashboard, where you can run tests in an interactive browser environment.
 
+### testing in CLI
 
+our testing should use Cypress to run both the component tests and the end-to-end tests. The testing will be invoked using the following command:
+
+```
+npm run test
+
+```
+
+
+**In Cypress, if you want to run component tests from the CLI instead of end-to-end (e2e) tests, you can configure Cypress to differentiate between these test types. Here’s how to run component tests specifically**
+
+### Set Up Separate Test Scripts in package.json
+
+We ahve to  add a script in the root  package.json to explicitly run component tests:
+```
+json
+{
+  "scripts": {
+    "test:e2e": "cypress run --e2e",
+    "test:component": "cypress run --component"
+  }
+}
+```
+
+
+
+### Video submission link
+
+Please feel free to find the vidoe submission link here:
+
+
+
+### Git repo link:
+
+ 
