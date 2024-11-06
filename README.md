@@ -175,13 +175,13 @@ json
 
 ### Video submission link
 
-Please feel free to find the vidoe submission link 
-
-https://github.com/lekshmisree89/cypress-challengehere:
+Please feel free to find the vidoe submission link here:
 
 
 
 
 ### Git repo link:
+
+https://github.com/lekshmisree89/cypress-challenge
 
  
