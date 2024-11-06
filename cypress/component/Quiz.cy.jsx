@@ -54,8 +54,10 @@ describe("Quiz Component", () => {
     cy.contains("Start Quiz").click();
     cy.wait("@getQuestions"); // Wait for the request to finish
     cy.get("[data-cy=answer-button]").first().click(); // Click the first answer
-    // cy.contains(mockQuestions[0].answers[0].text).click(); // Click the correct answer
-    cy.contains(mockQuestions[1].question).should("be.visible"); // Increase timeout if needed
+      // Click the correct answer
+    cy.contains(mockQuestions[1].question).should("be.visible");
+    
+    
   });
 
   it("shows the final score and allows restarting after completing the quiz", () => {
@@ -74,12 +76,14 @@ describe("Quiz Component", () => {
         .click(); // Click the correct answer based on its position
     });
 
-    // Assert that the score and completion message is visible
+
+    // Check if the final score is displayed correctly 
+    //after answering all questions
     cy.contains(
       `Your score: ${mockQuestions.length}/${mockQuestions.length}`
     ).should("be.visible");
 
-    // Click the "Take New Quiz" button to restart
+    // resstart the quiz   when the user clicks the "Take New Quiz" button
     cy.contains("Take New Quiz").click();
   });
 });
