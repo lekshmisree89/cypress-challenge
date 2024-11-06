@@ -160,7 +160,7 @@ npm run test
 
 ### Set Up Separate Test Scripts in package.json
 
-We ahve to  add a script in the root  package.json to explicitly run component tests:
+We have to  add a script in the root  package.json to explicitly run component tests:
 ```
 json
 {
